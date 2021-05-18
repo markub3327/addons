@@ -80,8 +80,9 @@ what it was tested against.
 #### Python Op Compatibility Matrix
 | TensorFlow Addons | TensorFlow | Python  |
 |:----------------------- |:---|:---------- |
-| tfa-nightly | 2.3, 2.4 | 3.6, 3.7, 3.8 | 
-| tensorflow-addons-0.12.0 | 2.3, 2.4 |3.6, 3.7, 3.8 |
+| tfa-nightly | 2.3, 2.4, 2.5 |3.6, 3.7, 3.8, 3.9 | 
+| tensorflow-addons-0.13.0 | 2.3, 2.4, 2.5 |3.6, 3.7, 3.8, 3.9 |
+| tensorflow-addons-0.12.1 | 2.3, 2.4 |3.6, 3.7, 3.8 |
 | tensorflow-addons-0.11.2 | 2.2, 2.3 |3.5, 3.6, 3.7, 3.8 |
 | tensorflow-addons-0.10.0 | 2.2 |3.5, 3.6, 3.7, 3.8 |
 | tensorflow-addons-0.9.1 | 2.1, 2.2 |3.5, 3.6, 3.7 |
@@ -107,8 +108,9 @@ is compiled differently. A typical example of this would be `conda`-installed Te
 #### C++ Custom Op Compatibility Matrix
 | TensorFlow Addons | TensorFlow | Compiler  | cuDNN | CUDA | 
 |:----------------------- |:---- |:---------|:---------|:---------|
-| tfa-nightly | 2.4 | GCC 7.3.1 | 8.0 | 11.0 |
-| tensorflow-addons-0.12.0 | 2.4  | GCC 7.3.1 | 8.0 | 11.0 |
+| tfa-nightly | 2.5 | GCC 7.3.1 | 8.1 | 11.2 |
+| tensorflow-addons-0.13.0 | 2.5  | GCC 7.3.1 | 8.1 | 11.2 |
+| tensorflow-addons-0.12.1 | 2.4  | GCC 7.3.1 | 8.0 | 11.0 |
 | tensorflow-addons-0.11.2 | 2.3  | GCC 7.3.1 | 7.6 | 10.1 |
 | tensorflow-addons-0.10.0 | 2.2  | GCC 7.3.1 | 7.6 | 10.1 |
 | tensorflow-addons-0.9.1 | 2.1  | GCC 7.3.1 | 7.6 | 10.1 |
@@ -194,9 +196,9 @@ The order of priority on Linux is:
 2) C++ implementation
 3) Pure TensorFlow + Python implementation (works on CPU and GPU)
 
-If you want to change the default priority, "C++ and CUDA" VS "pure TensorFlow Python", 
-you can set the variable `TF_ADDONS_PY_OPS` either from the command line or in 
-your code.
+If you want to change the default priority, "C++ and CUDA" VS "pure TensorFlow Python",
+you can set the environment variable `TF_ADDONS_PY_OPS=1` from the command line or
+run `tfa.options.disable_custom_kernel()` in your code.
 
 For example, if you are on Linux and you have compatibility problems with the compiled ops,
 you can give priority to the Python implementations:
@@ -210,7 +212,7 @@ or in your code:
 
 ```python
 import tensorflow_addons as tfa
-tfa.options.TF_ADDONS_PY_OPS = True
+tfa.options.disable_custom_kernel()
 ```
 
 This variable defaults to `True` on Windows and macOS, and `False` on Linux.
@@ -289,7 +291,7 @@ Do you want to contribute but are not sure of what? Here are a few suggestions:
   you can imagine how hard it is to review. It takes very long to read the paper,
   understand it and check the math in the pull request. If you're specialized, look at 
   the [list of pull requests](https://github.com/tensorflow/addons/pulls). 
-  If there is something from a paper you now, please comment on the pull request to
+  If there is something from a paper you know, please comment on the pull request to
   check the math is ok. If you see that everything is good, say it! It will help 
   the maintainers to sleep better at night knowing that he/she wasn't the only
   person to approve the pull request.

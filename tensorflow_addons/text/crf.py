@@ -13,13 +13,14 @@
 # limitations under the License.
 # ==============================================================================
 import warnings
+from distutils.version import LooseVersion
 
 import numpy as np
 import tensorflow as tf
 
 from tensorflow_addons.utils.types import TensorLike
 from typeguard import typechecked
-from typing import Optional
+from typing import Optional, Tuple
 
 # TODO: Wrap functions in @tf.function once
 # https://github.com/tensorflow/tensorflow/issues/29075 is resolved
@@ -206,7 +207,7 @@ def crf_log_likelihood(
     tag_indices: TensorLike,
     sequence_lengths: TensorLike,
     transition_params: Optional[TensorLike] = None,
-) -> tf.Tensor:
+) -> Tuple[tf.Tensor, tf.Tensor]:
     """Computes the log-likelihood of tag sequences in a CRF.
 
     Args:
@@ -538,6 +539,11 @@ def crf_decode(
     if tf.__version__[:3] == "2.4":
         warnings.warn(
             "CRF Decoding does not work with KerasTensors in TF2.4. The bug has since been fixed in tensorflow/tensorflow##45534"
+        )
+
+    if LooseVersion(tf.__version__) >= LooseVersion("2.5.0"):
+        warnings.warn(
+            "CRF decoding models have serialization issues in TF >=2.5 . Please see isse #2476"
         )
     sequence_length = tf.cast(sequence_length, dtype=tf.int32)
 

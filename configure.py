@@ -52,6 +52,26 @@ def is_raspi_arm():
     return os.uname()[4] == "armv7l"
 
 
+def is_linux_ppc64le():
+    return is_linux() and platform.machine() == "ppc64le"
+
+
+def is_linux_x86_64():
+    return is_linux() and platform.machine() == "x86_64"
+
+
+def is_linux_arm():
+    return is_linux() and platform.machine() == "arm"
+
+
+def is_linux_aarch64():
+    return is_linux() and platform.machine() == "aarch64"
+
+
+def is_linux_s390x():
+    return is_linux() and platform.machine() == "s390x"
+
+
 def get_tf_header_dir():
     import tensorflow as tf
 
@@ -116,12 +136,13 @@ def create_build_configuration():
         write("build:windows --enable_runfiles")
         write("build:windows --copt=/experimental:preprocessor")
         write("build:windows --host_copt=/experimental:preprocessor")
-        write("build:windows --copt=/arch=AVX2")
+        write("build:windows --copt=/arch=AVX")
         write("build:windows --cxxopt=/std:c++14")
         write("build:windows --host_cxxopt=/std:c++14")
 
     if is_macos() or is_linux():
-        write("build --copt=-mavx2")
+        if not is_linux_ppc64le():
+            write("build --copt=-mavx")
         write("build --cxxopt=-std=c++14")
         write("build --host_cxxopt=-std=c++14")
 
@@ -145,7 +166,7 @@ def configure_cuda():
         "CUDNN_INSTALL_PATH",
         os.getenv("CUDNN_INSTALL_PATH", "/usr/lib/x86_64-linux-gnu"),
     )
-    write_action_env("TF_CUDA_VERSION", os.getenv("TF_CUDA_VERSION", "11"))
+    write_action_env("TF_CUDA_VERSION", os.getenv("TF_CUDA_VERSION", "11.2"))
     write_action_env("TF_CUDNN_VERSION", os.getenv("TF_CUDNN_VERSION", "8"))
 
     write("test --config=cuda")
